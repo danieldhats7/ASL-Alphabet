@@ -71,7 +71,7 @@ function cambiarCamara() {
 
 function predecir() {
     if (modelo != null) {
-        console.log('dentro')
+        console.log('denstro')
         //Pasar canvas a version 150x150
         resample_single(canvas, 200, 200, othercanvas);
         var ctx2 = othercanvas.getContext("2d");
