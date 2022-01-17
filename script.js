@@ -110,7 +110,6 @@ function predecir() {
         else {
             text.push(clases[mayorIndice].toLowerCase());
         }
-        document.getElementById("resultado").innerText = clases[mayorIndice];
         document.getElementById("resultado").innerText = text.join("");
         
     }
