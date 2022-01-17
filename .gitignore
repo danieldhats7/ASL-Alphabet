@@ -1,2 +1,3 @@
 *.zip
-carpeta_salida_colab/
+converter/
+model_low_kaggle

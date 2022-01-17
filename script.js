@@ -10,9 +10,11 @@ var modelo = null;
 
 var camaras = [];
 
+var text = [];
+
 (async () => {
     console.log("Cargando modelo...");
-    modelo = await tf.loadLayersModel("models/carpeta_salida_kaggle/model.json");
+    modelo = await tf.loadLayersModel("models/model_low2/model.json");
     console.log("Modelo cargado...");
 })();
 
@@ -71,20 +73,19 @@ function cambiarCamara() {
 
 function predecir() {
     if (modelo != null) {
-        console.log('denstro')
         //Pasar canvas a version 150x150
-        resample_single(canvas, 200, 200, othercanvas);
+        resample_single(canvas, 64, 64, othercanvas);
         var ctx2 = othercanvas.getContext("2d");
-        var imgData = ctx2.getImageData(0,0,200,200);
+        var imgData = ctx2.getImageData(0,0,64,64);
         
         var arr = []; //El arreglo completo
         var arr150 = []; //Al llegar a arr150 posiciones se pone en 'arr' como un nuevo indice
         for (var p=0, i=0; p < imgData.data.length; p+=4) {
-            var red = imgData.data[p];
-            var green = imgData.data[p+1];
-            var blue = imgData.data[p+2];
+            var red = imgData.data[p]/ 255;
+            var green = imgData.data[p+1]/ 255;
+            var blue = imgData.data[p+2]/ 255;
             arr150.push([red, green, blue]); //Agregar al arr150 y normalizar a 0-1. Aparte queda dentro de un arreglo en el indice 0... again
-            if (arr150.length == 200) {
+            if (arr150.length == 64) {
                 arr.push(arr150);
                 arr150 = [];
             }
@@ -96,10 +97,23 @@ function predecir() {
         var mayorIndice = resultados.indexOf(Math.max.apply(1, resultados));
         var clases = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z", 'del','nothing','space'];
         console.log("Prediccion", clases[mayorIndice]);
-        document.getElementById("resultado").innerHTML = clases[mayorIndice];
+
+        if (clases[mayorIndice] == 'space'){
+            text.push(' ');
+        }
+        else if (clases[mayorIndice] == 'del'){
+            text.pop();
+        }
+        else if (clases[mayorIndice] == 'nothing'){
+            
+        }
+        else {
+            text.push(clases[mayorIndice].toLowerCase());
+        }
+        document.getElementById("resultado").innerText = clases[mayorIndice];
+        document.getElementById("resultado").innerText = text.join("");
         
     }
-    console.log('fuera')
     setTimeout(predecir, 3000);
     
     
